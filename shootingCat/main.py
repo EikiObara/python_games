@@ -69,11 +69,8 @@ class App:
         for i in range(len(self.balls)):
             if 0 < self.balls[i].pos.x and self.balls[i].pos.x < WINDOW_W:
                 ball_speed = self.balls[i].speed
-                if self.balls[i].vec > 0:
-                    ball_speed *= -1
 
-
-                self.balls[i].update(self.balls[i].pos.x - ball_speed,
+                self.balls[i].update(self.balls[i].pos.x + ball_speed,
                     self.balls[i].pos.y,
                     self.balls[i].vec,
                     self.balls[i].size,
@@ -86,9 +83,26 @@ class App:
                 del self.balls[i]
                 break
 
-    def addEnemy(self, xOffset, yOffset):
+    def updateEnemies(self):
+        for i in range(len(self.enemies)):
+            if 0 < self.enemies[i].pos.x and self.enemies[i].pos.x < WINDOW_W:
+                enemy_speed = self.enemies[i].speed
+
+                self.enemies[i].update(self.enemies[i].pos.x - enemy_speed,
+                        self.enemies[i].pos.y,
+                        self.enemies[i].vec)
+
+
+
+    def addEnemy(self):
+        if len(self.enemies) < ENEMY_MAX:
+            spawn_y = WINDOW_H / 2 * random.random() + ENEMY_H
+
+            if random.random() > 0.5:
+                spawn_y *= -1
+
             new_enemy = enemy.Enemy(self.ENEMY_ID)
-            new_enemy.update(WINDOW_W/2 + xOffset, WINDOW_H/2 + yOffset, self.cat.vec)
+            new_enemy.update(WINDOW_W - ENEMY_W, spawn_y, 1)
             self.enemies.append(new_enemy)
 
 
@@ -109,19 +123,15 @@ class App:
  
         # create objects
         # ball, enemy
-        if len(self.enemies) < ENEMY_MAX:
-            if random.random() > 0.5:
-                self.addEnemy((WINDOW_W / 2) - (ENEMY_W), ((WINDOW_H / 2) * random.random() - (ENEMY_H / 2)))
-            else:
-                self.addEnemy((WINDOW_W / 2) - (ENEMY_W), ((WINDOW_H / 2) * random.random() - (ENEMY_H / 2)) * -1)
+        self.addEnemy()
 
         # move all objects(coordinate, direction)
         # cat, balls, enemies
         self.updateBalls()
 
+        self.updateEnemies()
+
         # judge objects collision(detection, object delete)
-        # 
-        
 
 
     def draw(self):
