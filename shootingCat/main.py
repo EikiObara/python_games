@@ -13,7 +13,7 @@ CAT_W = 16
 ENEMY_H = 12
 ENEMY_W = 12
 
-ENEMY_MAX = 6
+ENEMY_MAX = 3
 
 CAT_SPEED_H = 2
 
@@ -33,7 +33,7 @@ class App:
         pyxel.image(self.ENEMY_ID).load(0, 0, IMG_ENEMY_PATH)
 
         self.cat = cat.Cat(self.CAT_ID, CAT_W, (WINDOW_H - CAT_H)/2, 1)
-        self.Balls = []
+        self.balls = []
         self.enemies = []
 
         pyxel.run(self.update, self.draw)
@@ -42,11 +42,13 @@ class App:
     def check_collision(self, index):
         enemy_count = len(self.enemies)
         for j in range(enemy_count):
-            if ((self.enemies[j].pos.x < self.Balls[index].pos.x)
-                and (self.Balls[index].pos.x < self.enemies[j].pos.x + ENEMY_W)
-                and (self.enemies[j].pos.y < self.Balls[index].pos.y)
-                and (self.Balls[index].pos.y < self.enemies[j].pos.y + ENEMY_H)):
+            if ((self.enemies[j].pos.x < self.balls[index].pos.x)
+                and (self.balls[index].pos.x < self.enemies[j].pos.x + ENEMY_W)
+                and (self.enemies[j].pos.y < self.balls[index].pos.y)
+                and (self.balls[index].pos.y < self.enemies[j].pos.y + ENEMY_H)):
+
                 del self.enemies[j]
+
                 break
 
 
@@ -60,28 +62,28 @@ class App:
                             new_ball.size,
                             new_ball.color)
 
-        self.Balls.append(new_ball)
+        self.balls.append(new_ball)
 
 
     def updateBalls(self):
-        for i in range(len(self.Balls)):
-            if 0 < self.Balls[i].pos.x and self.Balls[i].pos.x < WINDOW_W:
-                ball_speed = self.Balls[i].speed
-                if self.Balls[i].vec > 0:
+        for i in range(len(self.balls)):
+            if 0 < self.balls[i].pos.x and self.balls[i].pos.x < WINDOW_W:
+                ball_speed = self.balls[i].speed
+                if self.balls[i].vec > 0:
                     ball_speed *= -1
 
 
-                self.Balls[i].update(self.Balls[i].pos.x - ball_speed,
-                    self.Balls[i].pos.y,
-                    self.Balls[i].vec,
-                    self.Balls[i].size,
-                    self.Balls[i].color)
+                self.balls[i].update(self.balls[i].pos.x - ball_speed,
+                    self.balls[i].pos.y,
+                    self.balls[i].vec,
+                    self.balls[i].size,
+                    self.balls[i].color)
 
                    
                 # self.checkCollision(i)
 
             else:
-                del self.Balls[i]
+                del self.balls[i]
                 break
 
     def addEnemy(self, xOffset, yOffset):
@@ -132,7 +134,7 @@ class App:
 
         pyxel.blt(self.cat.pos.x, self.cat.pos.y, self.cat.img_cat, 0, 0, cat_w, CAT_H, 5)
 
-        for ball in self.Balls:
+        for ball in self.balls:
             pyxel.circ(ball.pos.x, ball.pos.y, ball.size, ball.color)
 
         for enemy in self.enemies:
